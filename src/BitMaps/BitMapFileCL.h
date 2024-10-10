@@ -1,5 +1,6 @@
 #ifndef CLARCHIVER_BITMAPFILECL_H
 #define CLARCHIVER_BITMAPFILECL_H
+#include <typeinfo.h>
 
 struct BitMapFileCL{
     unsigned int countOfFiles;
