@@ -3,4 +3,5 @@ project(CLArchiver C)
 
 set(CMAKE_C_STANDARD 17)
 
-add_executable(CLArchiver src/CLArchiver.c)
+add_executable(CLArchiver src/CLArchiver.c
+        src/BitMaps/BitMapFileCL.h)
