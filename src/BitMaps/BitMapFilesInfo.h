@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+
+/*Header of file information*/
 struct BitMapFilesInfo{
     uint8_t nameOfFile[20];
     uint32_t sizeOfFile;
@@ -12,37 +14,53 @@ struct BitMapFilesInfo{
 };
 
 
-
-void WriteBitMapFileInfo(const struct BitMapFilesInfo* bitMapFilesInfo,FILE* file,const __int32* offsetOfFile){
+/*Write header of file into archive*/
+void WriteBitMapFileInfo(const struct BitMapFilesInfo* bitMapFilesInfo,FILE* file,const uint32_t* offsetOfFile){
     fseek(file,*offsetOfFile,SEEK_SET);
-    fwrite(&bitMapFilesInfo,
-           sizeof(uint8_t)*20 + sizeof(uint32_t) + sizeof(uint16_t),
-           1,
-           file);
-    fwrite(&bitMapFilesInfo->symbols,
+    fwrite(bitMapFilesInfo->nameOfFile,
+          sizeof(uint8_t)*20,
+          1,
+          file);
+    fwrite(&bitMapFilesInfo->sizeOfFile,
+          sizeof(uint32_t),
+          1,
+          file);
+    fwrite(&bitMapFilesInfo->sizeOfAlphabet,
+          sizeof(uint16_t),
+          1,
+          file);
+    fwrite(bitMapFilesInfo->symbols,
            sizeof(uint8_t) * bitMapFilesInfo->sizeOfAlphabet,
            1,
            file);
-    fwrite(&bitMapFilesInfo->countOfThatSymbol,
+    fwrite(bitMapFilesInfo->countOfThatSymbol,
            sizeof(uint32_t) * bitMapFilesInfo->sizeOfAlphabet,
            1,
            file);
 }
 
-void ReadBitMapFileInfo(struct BitMapFilesInfo* bitMapFilesInfo,FILE* file,const __int32* offsetOfFile){
+/*Read header of file from archive*/
+void ReadBitMapFileInfo(struct BitMapFilesInfo* bitMapFilesInfo,FILE* file,const uint32_t* offsetOfFile){
     fseek(file,*offsetOfFile,SEEK_SET);
-    fread(&bitMapFilesInfo,
-           sizeof(uint8_t)*20 + sizeof(uint32_t) + sizeof(uint16_t),
+    fread(bitMapFilesInfo->nameOfFile,
+           sizeof(uint8_t)*20,
            1,
            file);
-
+    fread(&bitMapFilesInfo->sizeOfFile,
+          sizeof(uint32_t),
+          1,
+          file);
+    fread(&bitMapFilesInfo->sizeOfAlphabet,
+          sizeof(uint16_t),
+          1,
+          file);
     bitMapFilesInfo->symbols = (uint8_t*) malloc(sizeof(uint8_t)*bitMapFilesInfo->sizeOfAlphabet);
     bitMapFilesInfo->countOfThatSymbol = (uint32_t*) malloc(sizeof(uint32_t)*bitMapFilesInfo->sizeOfAlphabet);
-    fread(&bitMapFilesInfo->symbols,
+    fread(bitMapFilesInfo->symbols,
            sizeof(uint8_t) * bitMapFilesInfo->sizeOfAlphabet,
            1,
            file);
-    fread(&bitMapFilesInfo->countOfThatSymbol,
+    fread(bitMapFilesInfo->countOfThatSymbol,
            sizeof(uint32_t) * bitMapFilesInfo->sizeOfAlphabet,
            1,
            file);
